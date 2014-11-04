@@ -15,6 +15,13 @@ HEADERS = {
 path = ''.join(['/api/', settings.ABAKUS_TOKEN, '/user/check/'])
 
 
+class ApiError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
 class AbakusBackend:
     def authenticate(self, username, password):
         """
@@ -24,7 +31,12 @@ class AbakusBackend:
         connection = httplib.HTTPSConnection(getattr(settings, 'ABAKUS_URL', 'abakus.no'))
         connection.request("POST", path, params, HEADERS)
         response = connection.getresponse()
-        user_info = json.load(response)['user']
+
+        info = json.load(response)
+        try:
+            user_info = info['user']
+        except KeyError:
+            raise ApiError(info['status_message'])
 
         name = ''
         if 'name' in user_info:
