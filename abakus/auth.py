@@ -33,6 +33,13 @@ class AbakusBackend:
         if not bool(user_info['auth']) or len(user_info['committees']) == 0:
             return None
 
+        if hasattr(settings, 'ABAKUS_GROUP_REQUIRED'):
+            if 'committees' in user_info:
+                if not filter(lambda x: x in settings.ABAKUS_GROUP_REQUIRED, user_info['committees']):
+                    return None
+            else:
+                return None
+
         user = get_user_model().objects.get_or_create(username=username)[0]
         user.is_active = True
         user.first_name = name
