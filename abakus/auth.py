@@ -18,6 +18,7 @@ path = ''.join(['/api/', settings.ABAKUS_TOKEN, '/user/check/'])
 class ApiError(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
@@ -47,7 +48,8 @@ class AbakusBackend:
 
         if hasattr(settings, 'ABAKUS_GROUP_REQUIRED'):
             if 'committees' in user_info:
-                if not filter(lambda x: x in settings.ABAKUS_GROUP_REQUIRED, user_info['committees']):
+                if not filter(lambda x: x in settings.ABAKUS_GROUP_REQUIRED,
+                              user_info['committees']):
                     return None
             else:
                 return None
