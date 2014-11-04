@@ -15,7 +15,7 @@ HEADERS = {
 path = ''.join(['/api/', settings.ABAKUS_TOKEN, '/user/check/'])
 
 
-class TokenError(Exception):
+class ApiError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -35,8 +35,8 @@ class AbakusBackend:
         info = json.load(response)
         try:
             user_info = info['user']
-        except Exception:
-            raise TokenError(info['status_message'])
+        except KeyError:
+            raise ApiError(info['status_message'])
 
         name = ''
         if 'name' in user_info:
