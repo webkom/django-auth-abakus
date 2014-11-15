@@ -63,3 +63,11 @@ class AuthenticationBackendTests(unittest.TestCase):
 
         user = self.backend.authenticate('test', 'test')
         self.assertIsNone(user)
+
+    @override_settings(ABAKUS_GROUP_REQUIRED=['webkom'])
+    def test_group_required(self):
+        self.assertFalse(self.backend.has_required_group({'committees': []}))
+        self.assertFalse(self.backend.has_required_group({'committees': ['pr']}))
+        self.assertTrue(self.backend.has_required_group({'committees': ['webkom']}))
+        self.assertTrue(self.backend.has_required_group({'committees': ['pr', 'webkom', 'backup']}))
+
