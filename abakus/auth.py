@@ -1,18 +1,16 @@
-import httplib
-import urllib
-import json
-
+# -*- coding: utf-8 -*-
+import requests
 from django.conf import settings
 from django.contrib.auth.models import Group
 
 from .utils import get_user_model
 
-HEADERS = {
-    "Content-type": "application/x-www-form-urlencoded",
-    "Accept": "application/json"
-}
-
-path = ''.join(['/api/', settings.ABAKUS_TOKEN, '/user/check/'])
+path = ''.join([
+    getattr(settings, 'ABAKUS_URL', 'https://abakus.no'),
+    '/api/',
+    settings.ABAKUS_TOKEN,
+    '/user/check/'
+])
 
 
 class ApiError(Exception):
@@ -23,17 +21,14 @@ class ApiError(Exception):
         return repr(self.value)
 
 
-class AbakusBackend:
+class AbakusBackend(object):
     def authenticate(self, username, password):
         """
         Should try to login with abakus.no (NERD).
         """
-        params = urllib.urlencode({'username': username, 'password': password})
-        connection = httplib.HTTPSConnection(getattr(settings, 'ABAKUS_URL', 'abakus.no'))
-        connection.request("POST", path, params, HEADERS)
-        response = connection.getresponse()
+        response = requests.post(url=path, data={'username': username, 'password': password})
+        info = response.json()
 
-        info = json.load(response)
         try:
             user_info = info['user']
         except KeyError:
@@ -61,9 +56,9 @@ class AbakusBackend:
 
         if 'committees' in user_info:
             for committee in user_info['committees']:
-                g = Group.objects.filter(name=committee)
-                if len(g) == 1:
-                    user.groups.add(g[0])
+                groups = Group.objects.filter(name=committee)
+                if len(groups) == 1:
+                    user.groups.add(groups[0])
 
         return user
 

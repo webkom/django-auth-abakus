@@ -6,7 +6,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 setup(
     name="django-auth-abakus",
     version='0.1.0',
-    url='http://github.com/webkom/django-auth-',
+    url='http://github.com/webkom/django-auth-abakus',
     author='Webkom, Abakus Linjeforening',
     author_email='webkom@abakus.no',
     description='A django auth module that can be used to to authenticate '
@@ -14,6 +14,7 @@ setup(
     packages=find_packages(exclude='tests'),
     tests_require=[
         'django>=1.4',
+        'requests'
     ],
     license='MIT',
     test_suite='runtests.runtests',
