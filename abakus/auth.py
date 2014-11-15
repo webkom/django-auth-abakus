@@ -51,7 +51,7 @@ class AbakusBackend(object):
 
         user = get_user_model().objects.get_or_create(username=username)[0]
         user.is_active = True
-        user.first_name = name
+        self.parse_name(user, name)
         user.save()
 
         if 'committees' in user_info:
@@ -67,3 +67,9 @@ class AbakusBackend(object):
             return get_user_model().objects.get(pk=user_id)
         except get_user_model().DoesNotExist:
             return None
+
+    @staticmethod
+    def parse_name(user, name):
+        names = name.split(' ')
+        user.first_name = ' '.join(names[:len(names) - 1])
+        user.last_name = names[len(names) - 1]

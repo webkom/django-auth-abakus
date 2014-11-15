@@ -14,7 +14,8 @@ setup(
     packages=find_packages(exclude='tests'),
     tests_require=[
         'django>=1.4',
-        'requests'
+        'requests',
+        'responses'
     ],
     license='MIT',
     test_suite='runtests.runtests',
