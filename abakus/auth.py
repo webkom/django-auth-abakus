@@ -73,7 +73,8 @@ class AbakusBackend(object):
         user.first_name = ' '.join(names[:len(names) - 1])
         user.last_name = names[len(names) - 1]
 
-    def has_required_group(self, info):
+    @staticmethod
+    def has_required_group(info):
         if 'committees' not in info:
             return False
 
