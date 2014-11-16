@@ -34,10 +34,6 @@ class AbakusBackend(object):
         except KeyError:
             raise ApiError(info['status_message'])
 
-        name = ''
-        if 'name' in user_info:
-            name = user_info['name']
-
         if not bool(user_info['auth']):
             return None
 
@@ -50,7 +46,7 @@ class AbakusBackend(object):
 
         user = get_user_model().objects.get_or_create(username=username)[0]
         user.is_active = True
-        self.parse_name(user, name)
+        self.parse_name(user, user_info['name'])
         user.save()
 
         if 'committees' in user_info:
