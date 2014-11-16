@@ -38,7 +38,10 @@ class AbakusBackend(object):
         if 'name' in user_info:
             name = user_info['name']
 
-        if not bool(user_info['auth']) or len(user_info['committees']) == 0:
+        if not bool(user_info['auth']):
+            return None
+
+        if getattr(settings, 'ABAKUS_AUTH_REQUIRE_ABAKOM', False) and not user_info['is_abakom']:
             return None
 
         if hasattr(settings, 'ABAKUS_GROUP_REQUIRED'):
