@@ -45,11 +45,7 @@ class AbakusBackend(object):
             return None
 
         if hasattr(settings, 'ABAKUS_GROUP_REQUIRED'):
-            if 'committees' in user_info:
-                if not filter(lambda x: x in settings.ABAKUS_GROUP_REQUIRED,
-                              user_info['committees']):
-                    return None
-            else:
+            if not self.has_required_group(user_info):
                 return None
 
         user = get_user_model().objects.get_or_create(username=username)[0]
@@ -76,3 +72,10 @@ class AbakusBackend(object):
         names = name.split(' ')
         user.first_name = ' '.join(names[:len(names) - 1])
         user.last_name = names[len(names) - 1]
+
+    @staticmethod
+    def has_required_group(info):
+        if 'committees' not in info:
+            return False
+
+        return bool([g for g in info['committees'] if g in settings.ABAKUS_GROUP_REQUIRED])
