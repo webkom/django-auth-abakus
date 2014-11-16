@@ -37,6 +37,9 @@ class AbakusBackend(object):
         if not bool(user_info['auth']):
             return None
 
+        if getattr(settings, 'ABAKUS_AUTH_REQUIRE_ABAKUS', False) and not user_info['is_abakus']:
+            return None
+
         if getattr(settings, 'ABAKUS_AUTH_REQUIRE_ABAKOM', False) and not user_info['is_abakom']:
             return None
 
