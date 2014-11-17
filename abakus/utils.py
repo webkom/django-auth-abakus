@@ -14,10 +14,3 @@ else:
     AUTH_USER_MODEL = 'auth.User'
     get_user_model = lambda: User
     get_username_field = lambda: 'username'
-
-
-def get_username(user):
-    try:
-        return user.get_username()
-    except AttributeError:
-        return user.username
