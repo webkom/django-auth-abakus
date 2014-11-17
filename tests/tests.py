@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import Group
 from django.test.utils import override_settings
 from django.utils import unittest
 
 import responses
-from abakus.auth import AbakusBackend
+from abakus.auth import AbakusBackend, ApiError
+from abakus.utils import get_user_model
 
 
 class AuthenticationBackendTests(unittest.TestCase):
     def setUp(self):
         self.backend = AbakusBackend()
+
+    def tearDown(self):
+        get_user_model().objects.all().delete()
 
     def add_auth_api_response(self, body):
         responses.add(
@@ -18,14 +23,24 @@ class AuthenticationBackendTests(unittest.TestCase):
             content_type='application/json'
         )
 
-    @responses.activate
-    def test_authenticate_success(self):
-        self.add_auth_api_response('{"user": {"auth": true, "committees": "webkom", '
-                                   '"name": "Albus Dumbledore"}}')
-        user = self.backend.authenticate('test', 'test')
+    def assertUser(self, user):
         self.assertIsNotNone(user)
+        self.assertEqual(user.username, 'test')
         self.assertEqual(user.first_name, 'Albus')
         self.assertEqual(user.last_name, 'Dumbledore')
+
+    @responses.activate
+    def test_api_error(self):
+        self.add_auth_api_response('{"status_message": "Bad token"}')
+        self.assertRaises(ApiError, self.backend.authenticate, 'test', 'test')
+        self.assertRaisesRegexp(ApiError, r'Bad token', self.backend.authenticate, 'test', 'test')
+
+    @responses.activate
+    def test_authenticate_success(self):
+        self.add_auth_api_response('{"user": {"auth": true, "committees": ["webkom"], '
+                                   '"name": "Albus Dumbledore"}}')
+        user = self.backend.authenticate('test', 'test')
+        self.assertUser(user)
 
     @responses.activate
     def test_authenticate_failure(self):
@@ -34,15 +49,42 @@ class AuthenticationBackendTests(unittest.TestCase):
         self.assertIsNone(user)
 
     @responses.activate
+    def test_groups(self):
+        group = Group.objects.create(name='webkom')
+        self.add_auth_api_response('{"user": {"auth": true, "committees": ["webkom"], '
+                                   '"name": "Albus Dumbledore"}}')
+        user = self.backend.authenticate('test', 'test')
+        self.assertEqual(user.groups.all()[0].id, group.id)
+        self.assertEqual(user.groups.all()[0].name, 'webkom')
+
+        group.delete()
+
+    @responses.activate
     @override_settings(ABAKUS_AUTH_REQUIRE_ABAKOM=True)
     def test_authenticate_is_abakom(self):
         self.add_auth_api_response('{"user": {"auth": true, "is_abakom": true, '
                                    '"name": "Albus Dumbledore"}}')
 
         user = self.backend.authenticate('test', 'test')
-        self.assertIsNotNone(user)
-        self.assertEqual(user.first_name, 'Albus')
-        self.assertEqual(user.last_name, 'Dumbledore')
+        self.assertUser(user)
+
+    @responses.activate
+    @override_settings(ABAKUS_GROUP_REQUIRED=['webkom'])
+    def test_authenticate_is_abakom(self):
+        self.add_auth_api_response('{"user": {"auth": true, "committees": ["webkom"], '
+                                   '"name": "Albus Dumbledore"}}')
+
+        user = self.backend.authenticate('test', 'test')
+        self.assertUser(user)
+
+    @responses.activate
+    @override_settings(ABAKUS_GROUP_REQUIRED=['pr'])
+    def test_authenticate_is_abakom(self):
+        self.add_auth_api_response('{"user": {"auth": true, "committees": ["webkom"], '
+                                   '"name": "Albus Dumbledore"}}')
+
+        user = self.backend.authenticate('test', 'test')
+        self.assertIsNone(user)
 
     @responses.activate
     @override_settings(ABAKUS_AUTH_REQUIRE_ABAKOM=True)
@@ -59,9 +101,7 @@ class AuthenticationBackendTests(unittest.TestCase):
                                    ' "name": "Albus Dumbledore"}}')
 
         user = self.backend.authenticate('test', 'test')
-        self.assertIsNotNone(user)
-        self.assertEqual(user.first_name, 'Albus')
-        self.assertEqual(user.last_name, 'Dumbledore')
+        self.assertUser(user)
 
     @responses.activate
     @override_settings(ABAKUS_AUTH_REQUIRE_ABAKUS=True)
@@ -73,9 +113,13 @@ class AuthenticationBackendTests(unittest.TestCase):
 
     @override_settings(ABAKUS_GROUP_REQUIRED=['webkom'])
     def test_group_required(self):
+        self.assertFalse(self.backend.has_required_group({}))
         self.assertFalse(self.backend.has_required_group({'committees': []}))
         self.assertFalse(self.backend.has_required_group({'committees': ['pr']}))
         self.assertTrue(self.backend.has_required_group({'committees': ['webkom']}))
         self.assertTrue(self.backend.has_required_group({'committees': ['pr', 'webkom', 'backup']}))
 
-
+    def test_get_user(self):
+        get_user_model().objects.create(pk=1)
+        self.assertEqual(self.backend.get_user(1).id, 1)
+        self.assertEqual(self.backend.get_user(100), None)
