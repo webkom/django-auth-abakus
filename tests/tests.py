@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import Group
+from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils import unittest
 
 import responses
 from abakus.auth import AbakusBackend, ApiError
 from abakus.utils import get_user_model
 
 
-class AuthenticationBackendTests(unittest.TestCase):
+class AuthenticationBackendBaseTestCase(TestCase):
     def setUp(self):
         self.backend = AbakusBackend()
 
     def tearDown(self):
         get_user_model().objects.all().delete()
 
+
+class AuthenticationBackendTestCase(AuthenticationBackendBaseTestCase):
     def add_auth_api_response(self, body):
         responses.add(
             responses.POST,
@@ -123,3 +125,28 @@ class AuthenticationBackendTests(unittest.TestCase):
         get_user_model().objects.create(pk=1)
         self.assertEqual(self.backend.get_user(1).id, 1)
         self.assertEqual(self.backend.get_user(100), None)
+
+
+@override_settings(ABAKUS_DUMMY_AUTH=True)
+class DummyAuthenticationBackendTestCase(AuthenticationBackendBaseTestCase):
+
+    def test_wrong_password(self):
+        self.assertIsNone(self.backend.authenticate('u', 'wrong-password'))
+
+    def test_superuser(self):
+        user = self.backend.authenticate('superuser', 'abakus')
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
+
+    def test_staff(self):
+        user = self.backend.authenticate('staff', 'abakus')
+        self.assertFalse(user.is_superuser)
+        self.assertTrue(user.is_staff)
+
+    def test_group(self):
+        group = Group.objects.create(name='webkom')
+        user = self.backend.authenticate('webkom', 'abakus')
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.is_staff)
+        self.assertEqual(user.groups.all()[0].name, 'webkom')
+        group.delete()
