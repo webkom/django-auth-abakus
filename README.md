@@ -13,6 +13,8 @@ Set the authentication backend to *AbakusBackend*
 
 The token should be added in the django-settings as `ABAKUS_TOKEN`.
 
+For more information read the [documentation](http://django-auth-abakus.readthedocs.org/).
+
 
 ## Contribute
 Open an issue or a pull-request with your fix or awesome new feature.
