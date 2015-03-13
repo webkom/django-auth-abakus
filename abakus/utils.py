@@ -12,5 +12,7 @@ if django.VERSION >= (1, 5):
 else:
     from django.contrib.auth.models import User
     AUTH_USER_MODEL = 'auth.User'
-    get_user_model = lambda: User
-    get_username_field = lambda: 'username'
+
+    def get_user_model(): return User
+
+    def get_username_field(): return 'username'
