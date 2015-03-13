@@ -9,3 +9,7 @@ tasks:
  - tox -e py34-django17
  - flake8
  - coverage combine && coverage report
+
+coverage:
+  path: coverage.xml
+  parser: python
