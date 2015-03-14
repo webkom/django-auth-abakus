@@ -1,0 +1,3 @@
+include LICENSE
+include README.rst
+recursive-include abakus *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
