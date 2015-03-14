@@ -13,6 +13,8 @@ else:
     from django.contrib.auth.models import User
     AUTH_USER_MODEL = 'auth.User'
 
-    def get_user_model(): return User
+    def get_user_model():
+        return User
 
-    def get_username_field(): return 'username'
+    def get_username_field():
+        return 'username'

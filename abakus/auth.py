@@ -26,6 +26,8 @@ class AbakusBackend(object):
         """
         Should try to login with abakus.no (NERD).
         """
+        if getattr(settings, 'ABAKUS_DUMMY_AUTH', False):
+            return self.dummy_authenticate(username, password)
         response = requests.post(url=path, data={'username': username, 'password': password})
         info = response.json()
 
@@ -78,3 +80,17 @@ class AbakusBackend(object):
             return False
 
         return bool([g for g in info['committees'] if g in settings.ABAKUS_GROUP_REQUIRED])
+
+    def dummy_authenticate(self, username, password):
+        if password == 'abakus':
+            user = get_user_model().objects.get_or_create(username=username)[0]
+            if username == 'superuser':
+                user.is_superuser = True
+                user.is_staff = True
+            elif username == 'staff':
+                user.is_staff = True
+            elif Group.objects.filter(name=username).exists():
+                user.groups.add(Group.objects.get(name=username))
+            user.save()
+            return user
+        return None
