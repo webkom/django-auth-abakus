@@ -5,7 +5,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
 setup(
     name="django-auth-abakus",
-    version='0.2.2',
+    version='1.0.0',
     url='http://github.com/webkom/django-auth-abakus',
     author='Webkom, Abakus Linjeforening',
     author_email='webkom@abakus.no',
