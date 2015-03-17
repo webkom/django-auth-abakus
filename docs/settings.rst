@@ -27,3 +27,15 @@ Settings
     Example: The user needs to be member of Webkom: ::
 
         ABAKUS_GROUP_REQUIRED = ['Webkom']
+
+
+.. attribute:: ABAKUS_SUPERUSER_GROUPS
+    :noindex:
+
+    **Default:** `[]`
+
+    ABAKUS_SUPERUSER_GROUPS is a list of committees with superuser access.
+
+    Example: The user needs to be member of Webkom or HS: ::
+
+        ABAKUS_GROUP_REQUIRED = ['Webkom', 'HS']
