@@ -136,7 +136,7 @@ class AuthenticationBackendTestCase(AuthenticationBackendBaseTestCase):
         self.assertUser(user)
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_staff)
-    
+
     @responses.activate
     @override_settings(ABAKUS_SUPERUSER_GROUPS=['pr', 'webkom'])
     def test_superusergroup_member(self):
