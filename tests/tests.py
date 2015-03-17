@@ -126,6 +126,27 @@ class AuthenticationBackendTestCase(AuthenticationBackendBaseTestCase):
         self.assertEqual(self.backend.get_user(1).id, 1)
         self.assertEqual(self.backend.get_user(100), None)
 
+    @responses.activate
+    @override_settings(ABAKUS_SUPERUSER_GROUPS=['pr'])
+    def test_not_superusergroup_member(self):
+        self.add_auth_api_response('{"user": {"auth": true, "is_abakus": true,'
+                                   ' "name": "Albus Dumbledore", "committees": ["webkom"]}}')
+
+        user = self.backend.authenticate('test', 'test')
+        self.assertUser(user)
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.is_staff)
+
+    @responses.activate
+    @override_settings(ABAKUS_SUPERUSER_GROUPS=['pr', 'webkom'])
+    def test_superusergroup_member(self):
+        self.add_auth_api_response('{"user": {"auth": true, "is_abakus": true,'
+                                   ' "name": "Albus Dumbledore", "committees": ["labamba", "webkom"]}}')
+
+        user = self.backend.authenticate('test', 'test')
+        self.assertUser(user)
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
 
 @override_settings(ABAKUS_DUMMY_AUTH=True)
 class DummyAuthenticationBackendTestCase(AuthenticationBackendBaseTestCase):

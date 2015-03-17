@@ -60,6 +60,14 @@ class AbakusBackend(object):
                 if len(groups) == 1:
                     user.groups.add(groups[0])
 
+            if hasattr(settings, 'ABAKUS_SUPERUSER_GROUPS'):
+                for superuser_committee in settings.ABAKUS_SUPERUSER_GROUPS:
+                    if superuser_committee in user_info['committees']:
+                        user.is_superuser = True
+                        user.is_staff = True
+                        user.save()
+                        break
+
         return user
 
     def get_user(self, user_id):
