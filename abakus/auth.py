@@ -59,7 +59,7 @@ class AbakusBackend(object):
                 groups = Group.objects.filter(name=committee)
                 if len(groups) == 1:
                     user.groups.add(groups[0])
-                    
+
             if hasattr(settings, 'ABAKUS_SUPERUSER_GROUPS'):
                 for superuser_committee in settings.ABAKUS_SUPERUSER_GROUPS:
                     if superuser_committee in user_info['committeeser']:
