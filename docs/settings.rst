@@ -38,4 +38,4 @@ Settings
 
     Example: The user needs to be member of Webkom or HS: ::
 
-        ABAKUS_GROUP_REQUIRED = ['Webkom', 'HS']
+        ABAKUS_SUPERUSER_GROUPS = ['Webkom', 'HS']
