@@ -41,10 +41,10 @@ Contents:
     :target: https://ci.frigg.io/webkom/django-auth-abakus/last/
     :alt: Coverage
 
-.. |version| image:: https://pypip.in/version/django-auth-abakus/badge.png?style=flat
+.. |version| image:: https://pypip.in/version/django-auth-abakus/badge.svg?style=flat
     :target: https://pypi.python.org/pypi/django-auth-abakus/
     :alt: Latest Version
 
-.. |python| image:: https://pypip.in/py_versions/django-auth-abakus/badge.png?style=flat
+.. |python| image:: https://pypip.in/py_versions/django-auth-abakus/badge.svg?style=flat
     :target: https://pypi.python.org/pypi/django-auth-abakus/
     :alt: Supported Python versions
