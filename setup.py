@@ -17,7 +17,7 @@ setup(
     ],
     tests_require=[
         'django>=1.4',
-        'requests==2.4.3',
+        'requests==2.7.0',
         'responses'
     ],
     license='MIT',
