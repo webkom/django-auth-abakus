@@ -22,7 +22,7 @@ setup(
                 'users against the API of abakus.no.',
     packages=find_packages(exclude='tests'),
     install_requires=[
-        'requests==2.4.3',
+        'requests==2.7.0',
     ],
     tests_require=[
         'django>=1.4',
