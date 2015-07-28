@@ -24,6 +24,11 @@ Contribute
 Open an issue or a pull-request with your fix or awesome new feature.
 Make sure to check those that are already open, to avoid duplicates.
 
+Create release
+--------------
+
+Run `semantic-release publish` and the correct version number will be chosen and commited/tagged before it is pushed to git and uploaded to pypi.
+
 --------------
 
 MIT © Webkom, Abakus Linjeforening

@@ -1,7 +1,16 @@
+import re
 import os
+
 from setuptools import setup, find_packages
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+
+with open('abakus/__init__.py', 'r') as fd:
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+        fd.read(),
+        re.MULTILINE
+    ).group(1)
 
 setup(
     name="django-auth-abakus",
