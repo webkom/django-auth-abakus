@@ -12,6 +12,12 @@ with open('abakus/__init__.py', 'r') as fd:
         re.MULTILINE
     ).group(1)
 
+install_requires = ['requests==2.10.0']
+tests_require = [
+    'django>=1.4',
+    'responses'
+] + install_requires
+
 setup(
     name="django-auth-abakus",
     version='1.1.0',
@@ -21,14 +27,8 @@ setup(
     description='A django auth module that can be used to to authenticate '
                 'users against the API of abakus.no.',
     packages=find_packages(exclude='tests'),
-    install_requires=[
-        'requests==2.10.0',
-    ],
-    tests_require=[
-        'django>=1.4',
-        'requests==2.10.0',
-        'responses'
-    ],
+    install_requires=install_requires,
+    tests_require=tests_require,
     license='MIT',
     test_suite='runtests.runtests',
     include_package_data=True,
