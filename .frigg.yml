@@ -11,6 +11,7 @@ tasks:
  - tox -e py34-django17
  - tox -e py34-django18
  - tox -e py34-django19
+ - tox -e py35-django19
  - tox -e flake8
  - coverage combine && coverage report && coverage xml
  - tox -e docs
