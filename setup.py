@@ -12,7 +12,7 @@ with open('abakus/__init__.py', 'r') as fd:
         re.MULTILINE
     ).group(1)
 
-install_requires = ['requests==2.10.0']
+install_requires = ['requests==2.11.0']
 tests_require = [
     'django>=1.4',
     'responses'
