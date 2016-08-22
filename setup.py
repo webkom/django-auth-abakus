@@ -1,5 +1,6 @@
 import re
 import os
+from pip.req import parse_requirements
 
 from setuptools import setup, find_packages
 
@@ -12,15 +13,17 @@ with open('abakus/__init__.py', 'r') as fd:
         re.MULTILINE
     ).group(1)
 
-install_requires = ['requests==2.10.0']
+requirements = parse_requirements('requirements/base.txt', session=False)
+install_requires = [str(package.req) for package in requirements]
+
 tests_require = [
-    'django>=1.4',
+    'django>=1.9',
     'responses'
 ] + install_requires
 
 setup(
-    name="django-auth-abakus",
-    version='1.1.0',
+    name='django-auth-abakus',
+    version=version,
     url='http://github.com/webkom/django-auth-abakus',
     author='Webkom, Abakus Linjeforening',
     author_email='webkom@abakus.no',
@@ -33,14 +36,16 @@ setup(
     test_suite='runtests.runtests',
     include_package_data=True,
     classifiers=[
-        "Programming Language :: Python",
+        'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Framework :: Django",
-        "Environment :: Web Environment",
-        "Operating System :: OS Independent",
-        "Natural Language :: English",
+        'Programming Language :: Python :: 3.5',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Framework :: Django',
+        'Environment :: Web Environment',
+        'Operating System :: OS Independent',
+        'Natural Language :: English',
+        'License :: OSI Approved :: MIT License'
     ]
 )

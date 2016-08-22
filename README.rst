@@ -2,21 +2,14 @@ django-auth-abakus |Build status| |Coverage status|
 ===================================================
 
 A django auth module that can be used to to authenticate users against
-the API of abakus.no. If you would like to use it you need a API token.
-Contact webkom@abakus.no to request one.
+the API of abakus.no. You need valid credentials for a Oauth2 application to use this library.
+Contact webkom@abakus.no for more information.
 
-Usage
------
-
-Set the authentication backend to *AbakusBackend*
-
-.. code:: python
-
-        AUTHENTICATION_BACKENDS = ( 'abakus.auth.AbakusBackend', )
-
-The token should be added in the django-settings as ``ABAKUS_TOKEN``.
-
-For more information read the `documentation`_.
+Important Notice
+----------------
+Versions from 2.0 and higher is used to authenticate against the new abakus.no "LEGO".
+Older versions support the old system called "NERD". As of 10.06.2016, "NERD" is
+running in production.
 
 Contribute
 ----------
@@ -27,7 +20,8 @@ Make sure to check those that are already open, to avoid duplicates.
 Create release
 --------------
 
-Run `semantic-release publish` and the correct version number will be chosen and commited/tagged before it is pushed to git and uploaded to pypi.
+Run `semantic-release publish` and the correct version number will be chosen and
+commited/tagged before it is pushed to git and uploaded to pypi.
 
 --------------
 

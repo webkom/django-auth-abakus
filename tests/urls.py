@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
-from django.conf.urls import patterns, url, include
+from django.conf.urls import include, url
 
-urlpatterns = patterns(
-    '',
-    url(r'^accounts/', include('django.contrib.auth.urls')),
-)
+urlpatterns = [
+    url(r'^auth/', include('django.contrib.auth.urls')),
+]
