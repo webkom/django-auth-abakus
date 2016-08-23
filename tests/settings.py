@@ -4,9 +4,8 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'abakus_auth',
-        'HOST': '127.0.0.1'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:'
     }
 }
 
@@ -28,3 +27,9 @@ SECRET_KEY = 'supersecret'
 ROOT_URLCONF = 'tests.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+ABAKUS_AUTH = {
+    'SITE_URL': 'http://127.0.0.1:8000',
+    'CLIENT_ID': 'test',
+    'CLIENT_SECRET': 'test'
+}

@@ -5,7 +5,18 @@ from django.core.exceptions import ImproperlyConfigured
 
 class Settings(object):
 
-    DEFAULTS = {}
+    DEFAULTS = {
+        'TOKEN_ENDPOINT': '/authorization/oauth2/token/',
+        'USER_ENDPOINT': '/api/v1/users/me/',
+
+        'SITE_URL': 'https://abakus.no',
+        'POPULATE_USER_FIELDS': ['email', 'first_name', 'last_name', 'is_active'],
+
+        'REQUIRE_ABAKUS': True,
+        'REQUIRE_ABAKOM': False,
+        'REQUIRED_GROUPS': [],
+        'SUPERUSER_GROUPS': []
+    }
 
     def __getattr__(self, item):
         default_value = self.DEFAULTS.get(item)

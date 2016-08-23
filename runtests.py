@@ -3,6 +3,7 @@ import os
 import sys
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 from django.test.utils import get_runner  # noqa
 from django.conf import settings  # noqa
