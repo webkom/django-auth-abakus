@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import Group
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 
@@ -51,6 +52,14 @@ class AbakusBackend(object):
                 username=data['username'],
                 defaults=user_data
             )
+
+            for group in data['groups']:
+                try:
+                    user_group = Group.objects.get(name=group)
+                    user.groups.add(user_group)
+                except Group.DoesNotExist:
+                    pass
+
             return user
 
         return None
