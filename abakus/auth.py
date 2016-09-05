@@ -40,7 +40,7 @@ class AbakusBackend(object):
             if not (auth_settings.REQUIRE_ABAKOM and data['is_abakom_member']):
                 return None
 
-            is_valid, is_superuser = self.validate_groups(data['groups'])
+            is_valid, is_superuser = self.validate_groups(data['committees'])
 
             if not is_valid:
                 return None
@@ -53,7 +53,7 @@ class AbakusBackend(object):
                 defaults=user_data
             )
 
-            for group in data['groups']:
+            for group in data['committees']:
                 try:
                     user_group = Group.objects.get(name=group)
                     user.groups.add(user_group)
