@@ -1,0 +1,55 @@
+pipeline:
+  python27:
+    image: python:2.7
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - pip install tox
+      - tox -e py27-django18
+      - tox -e py27-django19
+
+  python34:
+    image: python:3.4
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - pip install tox
+      - tox -e py34-django18
+      - tox -e py34-django19
+      - tox -e py34-django110
+
+  python36:
+    image: python:3.6
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - pip install tox
+      - tox -e py36-django19
+      - tox -e py36-django110
+
+  python35:
+    image: python:3.5
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - pip install tox
+      - tox -e py35-django19
+      - tox -e py35-django110
+      - tox -e flake8
+      - tox -e isort
+      - tox -e coverage
+      - tox -e docs
+
+services:
+  database:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_USER=abakus

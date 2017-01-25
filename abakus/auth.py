@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import Group
-from oauthlib.oauth2 import LegacyApplicationClient
-from requests_oauthlib import OAuth2Session
 
+from abakus.utils import get_user_model
+
+from .session import LegoSession
 from .settings import auth_settings
-from .utils import get_user_model, underscoreize
+from .utils import underscoreize
 
 
 class AbakusBackend(object):
+
+    def __init__(self):
+        self.session = LegoSession()
 
     def authenticate(self, username, password):
         """
@@ -15,32 +19,21 @@ class AbakusBackend(object):
         """
         username, password = username.strip(), password.strip()
 
-        client_id = auth_settings.CLIENT_ID
-        client_secret = auth_settings.CLIENT_SECRET
-
-        client = LegacyApplicationClient(client_id=client_id)
-        abakus = OAuth2Session(client=client)
-
-        abakus.fetch_token(
-            token_url=self.get_token_url(),
-            username=username,
-            password=password,
-            client_id=client_id,
-            client_secret=client_secret
-        )
-
-        response = abakus.get(self.get_user_url())
+        response = self.session.post(self.get_token_url(), json={
+            'username': username,
+            'password': password
+        })
 
         if 300 > response.status_code >= 200:
-            data = underscoreize(response.json())
+            data = underscoreize(response.json()['user'])
 
-            if not (auth_settings.REQUIRE_ABAKUS and data['is_abakus_member']):
+            if auth_settings.REQUIRE_ABAKUS and not data['is_abakus_member']:
                 return None
 
-            if not (auth_settings.REQUIRE_ABAKOM and data['is_abakom_member']):
+            if auth_settings.REQUIRE_ABAKOM and not data['is_abakom_member']:
                 return None
 
-            is_valid, is_superuser = self.validate_groups(data['committees'])
+            is_valid, is_superuser = self.validate_groups(data['abakus_groups'])
 
             if not is_valid:
                 return None
@@ -53,7 +46,7 @@ class AbakusBackend(object):
                 defaults=user_data
             )
 
-            for group in data['committees']:
+            for group in data['abakus_groups']:
                 try:
                     user_group = Group.objects.get(name=group)
                     user.groups.add(user_group)
@@ -73,24 +66,20 @@ class AbakusBackend(object):
         superuser_groups = auth_settings.SUPERUSER_GROUPS
 
         is_valid = not required_groups or bool(
-            [group for group in groups if group in required_groups]
+            [group['name'] for group in groups if group['name'] in required_groups]
         )
         is_superuser = not superuser_groups or bool(
-            [group for group in groups if group in superuser_groups]
+            [group['name'] for group in groups if group['name'] in superuser_groups]
         )
 
         return is_valid, is_superuser
 
     def get_token_url(self):
+        """
+        Generate the token url used to login.
+        """
         options = {
             'site_url': auth_settings.SITE_URL,
             'token_endpoint': auth_settings.TOKEN_ENDPOINT
         }
         return '{site_url}{token_endpoint}'.format(**options)
-
-    def get_user_url(self):
-        options = {
-            'site_url': auth_settings.SITE_URL,
-            'user_endpoint': auth_settings.USER_ENDPOINT
-        }
-        return '{site_url}{user_endpoint}'.format(**options)

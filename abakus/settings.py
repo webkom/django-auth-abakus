@@ -6,16 +6,16 @@ from django.core.exceptions import ImproperlyConfigured
 class Settings(object):
 
     DEFAULTS = {
-        'TOKEN_ENDPOINT': '/authorization/oauth2/token/',
-        'USER_ENDPOINT': '/api/v1/users/me/',
+        'TOKEN_ENDPOINT': '/authorization/token-auth/',
 
         'SITE_URL': 'https://abakus.no',
         'POPULATE_USER_FIELDS': ['email', 'first_name', 'last_name', 'is_active'],
 
-        'REQUIRE_ABAKUS': True,
-        'REQUIRE_ABAKOM': False,
         'REQUIRED_GROUPS': [],
-        'SUPERUSER_GROUPS': []
+        'SUPERUSER_GROUPS': [],
+
+        'REQUIRE_ABAKUS': False,
+        'REQUIRE_ABAKOM': False
     }
 
     def __getattr__(self, item):
@@ -32,5 +32,6 @@ class Settings(object):
         raise ImproperlyConfigured('Please set {option} in your ABAKUS_AUTH config.'.format(
             option=item
         ))
+
 
 auth_settings = Settings()

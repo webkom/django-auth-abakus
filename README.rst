@@ -1,5 +1,5 @@
-django-auth-abakus |Build status| |Coverage status|
-===================================================
+django-auth-abakus |Build status|
+=================================
 
 A django auth module that can be used to to authenticate users against
 the API of abakus.no. You need valid credentials for a Oauth2 application to use this library.
@@ -29,7 +29,5 @@ MIT © Webkom, Abakus Linjeforening
 
 .. _documentation: http://django-auth-abakus.readthedocs.org/
 
-.. |Build status| image:: https://ci.frigg.io/badges/webkom/django-auth-abakus/
-   :target: https://ci.frigg.io/webkom/django-auth-abakus/last/
-.. |Coverage status| image:: https://ci.frigg.io/badges/coverage/webkom/django-auth-abakus/
-   :target: https://ci.frigg.io/webkom/django-auth-abakus/last/
+.. |Build status| image:: https://ci.abakus.no/api/badges/webkom/django-auth-abakus/status.svg
+   :target: https://ci.abakus.no/webkom/django-auth-abakus
