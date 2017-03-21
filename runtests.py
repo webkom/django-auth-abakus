@@ -2,12 +2,13 @@
 import os
 import sys
 
+import django  # noqa
+from django.conf import settings  # noqa
+from django.test.utils import get_runner  # noqa
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-from django.test.utils import get_runner  # noqa
-from django.conf import settings  # noqa
-import django  # noqa
 
 if django.VERSION >= (1, 7):
     django.setup()

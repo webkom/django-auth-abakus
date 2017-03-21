@@ -1,2 +1,4 @@
 wheel
 coverage==4.3
+Django==1.10.6
+responses==0.5.1

@@ -1,8 +1,8 @@
-import re
 import os
-from pip.req import parse_requirements
+import re
 
-from setuptools import setup, find_packages
+from pip.req import parse_requirements
+from setuptools import find_packages, setup
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
